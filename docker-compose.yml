@@ -1,0 +1,53 @@
+version: '2'
+services:
+
+    #####################
+    # PHP7
+    #####################
+    php7:
+        container_name: DO2_php7
+        build         : ./build/php7/
+        volumes       :
+            - ./config/php7/:/etc/apache2/
+            - ./www/:/var/www/html/
+            - ./LOGS/php7/:/var/log/apache2/
+            - ./SSL/etc/letsencrypt/:/etc/letsencrypt/
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - db
+        links:
+            - db
+        restart: always
+
+    #####################
+    # PHP5
+    #####################
+    php5:
+        container_name: DO2_php5
+        build         : ./build/php5/
+        volumes       :
+            - ./config/php5/:/etc/apache2/
+            - ./www/:/var/www/html/
+            - ./LOGS/php5/:/var/log/apache2/
+            - ./SSL/etc/letsencrypt/:/etc/letsencrypt/
+        depends_on:
+            - db
+            - php7
+        links:
+            - db
+            - php7
+        restart: always
+
+    #####################
+    # DATABASE
+    #####################
+    db:
+        container_name: DO2_mariadb
+        image         : mariadb:10.0
+        volumes       :
+            - ./MySQL/:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=mGsZ886Xs9DDbKF4PPB9
+        restart: always
